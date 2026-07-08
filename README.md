@@ -1,0 +1,2 @@
+# wordsnap-wts-factory
+WS
