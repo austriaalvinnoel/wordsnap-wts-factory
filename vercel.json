@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WordSnap — WTS Factory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070f;--surf:#0d0d1a;--card:#11111e;--bdr:#1c1c2e;
+  --blue:#38bdf8;--gold:#f59e0b;--purple:#a78bfa;--green:#34d399;--red:#f87171;
+  --tx:#e2e8f0;--mt:#526070;
+  --sans:'Space Grotesk',system-ui,sans-serif;
+  --mono:'Space Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100vh;}
+
+/* HEADER */
+.hdr{background:var(--surf);border-bottom:1px solid var(--bdr);padding:14px 28px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;}
+.logo{font-family:var(--mono);font-size:20px;font-weight:700;}
+.logo .w{color:var(--blue);}.logo .s{color:var(--gold);}
+.hdr-info h1{font-size:14px;font-weight:700;}
+.hdr-info p{font-size:11px;color:var(--mt);font-family:var(--mono);}
+.badge{margin-left:auto;font-family:var(--mono);font-size:10px;padding:4px 12px;border-radius:20px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);color:var(--purple);}
+
+/* BODY */
+.body{max-width:1000px;margin:0 auto;padding:28px 24px 60px;}
+
+/* INPUT */
+.ilbl{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--mt);text-transform:uppercase;margin-bottom:10px;}
+.irow{display:flex;gap:10px;margin-bottom:14px;}
+.tinput{flex:1;background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:13px 18px;color:var(--tx);font-family:var(--sans);font-size:15px;font-weight:600;outline:none;transition:border-color .15s;}
+.tinput::placeholder{color:var(--mt);font-weight:400;}
+.tinput:focus{border-color:var(--blue);}
+.csel{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:0 14px;color:var(--tx);font-family:var(--mono);font-size:12px;outline:none;cursor:pointer;min-width:100px;}
+.csel option{background:var(--card);}
+.gbtn{background:linear-gradient(135deg,var(--blue),var(--purple));border:none;border-radius:10px;padding:0 28px;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:opacity .15s,transform .15s;white-space:nowrap;min-height:46px;}
+.gbtn:hover{opacity:.88;transform:translateY(-1px);}
+.gbtn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+/* HOT TOPICS */
+.hot-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--mt);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.hot-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;}
+.hchip{display:inline-flex;flex-direction:column;padding:6px 11px;border-radius:8px;background:var(--card);border:1px solid var(--bdr);cursor:pointer;transition:all .15s;gap:2px;}
+.hchip:hover{border-color:var(--blue);background:rgba(56,189,248,.05);}
+.hchip .hw{font-size:11px;font-weight:700;color:var(--tx);}
+.hchip .hr{font-family:var(--mono);font-size:8px;color:var(--mt);}
+.hchip.top{border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.04);}
+.hchip.top .hw{color:var(--gold);}
+.hchip.top .hr{color:rgba(245,158,11,.6);}
+
+/* PAIR BLOCK */
+.pair-block{border:1px solid var(--bdr);border-radius:16px;overflow:hidden;margin-bottom:24px;}
+
+/* pair header */
+.pair-hdr{background:var(--surf);border-bottom:1px solid var(--bdr);padding:12px 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.pnum{font-family:var(--mono);font-size:11px;color:var(--mt);min-width:22px;}
+.wchip{font-weight:700;font-size:14px;padding:4px 13px;border-radius:6px;outline:none;cursor:text;min-width:60px;}
+.wchip.a{background:rgba(56,189,248,.12);color:var(--blue);border:1px solid rgba(56,189,248,.25);}
+.wchip.b{background:rgba(245,158,11,.12);color:var(--gold);border:1px solid rgba(245,158,11,.25);}
+.wchip:focus{outline:1px dashed currentColor;}
+.wsep{font-family:var(--mono);font-size:10px;color:var(--mt);}
+.simtag{font-family:var(--mono);font-size:10px;color:var(--green);background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);padding:3px 10px;border-radius:20px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pacts{margin-left:auto;display:flex;gap:8px;}
+.abtn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--bdr);background:var(--card);color:var(--tx);transition:all .15s;white-space:nowrap;font-family:var(--sans);}
+.abtn:hover{border-color:var(--blue);color:var(--blue);}
+.abtn:disabled{opacity:.35;cursor:not-allowed;}
+.abtn.ga{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.35);color:var(--purple);}
+.abtn.ga:hover{background:rgba(167,139,250,.18);}
+.abtn.ex{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.3);color:var(--green);}
+.abtn.ex:hover{background:rgba(52,211,153,.15);}
+
+/* VO STRIP */
+.vo-strip{background:var(--surf);border-bottom:1px solid var(--bdr);padding:9px 18px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.vo-lbl{font-family:var(--mono);font-size:10px;color:var(--blue);letter-spacing:.08em;white-space:nowrap;}
+.vbtn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--bdr);background:var(--card);color:var(--tx);font-family:var(--sans);transition:all .15s;}
+.vbtn:hover{border-color:var(--blue);color:var(--blue);}
+.vsel{font-size:11px;padding:4px 10px;background:var(--card);border:1px solid var(--bdr);border-radius:6px;color:var(--tx);font-family:var(--sans);outline:none;max-width:160px;}
+.vst{font-family:var(--mono);font-size:10px;color:var(--mt);margin-left:auto;}
+.vst.on{color:var(--green);}
+
+/* CLIPS GRID */
+.clips{display:grid;grid-template-columns:repeat(3,1fr);}
+.cc{border-right:1px solid var(--bdr);display:flex;flex-direction:column;}
+.cc:last-child{border-right:none;}
+.ch{padding:11px 15px;background:rgba(0,0,0,.2);border-bottom:1px solid var(--bdr);display:flex;flex-direction:column;gap:3px;}
+.cbadge{font-family:var(--mono);font-size:9px;letter-spacing:.1em;font-weight:700;}
+.cbadge.c1{color:var(--blue);}.cbadge.c2{color:var(--purple);}.cbadge.c3{color:var(--gold);}
+.ctitle{font-size:12px;font-weight:700;}
+.cdur{font-family:var(--mono);font-size:9px;color:var(--mt);}
+
+/* CLIP BODY */
+.cbody{padding:13px 15px;flex:1;display:flex;flex-direction:column;gap:13px;}
+.slbl{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;font-weight:700;}
+.slbl.img{color:var(--purple);}.slbl.vid{color:var(--gold);}.slbl.vo{color:var(--green);}
+.tbox{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:10px 12px;font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--tx);min-height:78px;outline:none;white-space:pre-wrap;word-break:break-word;transition:border-color .15s;}
+.tbox:focus{outline:1px dashed var(--blue);}
+.tbox.ld{color:var(--mt);font-style:italic;min-height:50px;}
+.tbox.vo{min-height:40px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--green);background:rgba(52,211,153,.05);border-color:rgba(52,211,153,.18);}
+
+/* SYS PROMPT */
+.sys-r{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;background:rgba(0,0,0,.25);border:1px solid var(--bdr);border-radius:7px 7px 0 0;cursor:pointer;user-select:none;transition:background .15s;}
+.sys-r:hover{background:rgba(56,189,248,.04);}
+.sys-lk{font-size:10px;color:var(--mt);font-family:var(--mono);}
+.sys-ar{font-size:10px;color:var(--blue);font-family:var(--mono);}
+.sys-c{display:none;border:1px solid var(--bdr);border-top:none;border-radius:0 0 7px 7px;padding:12px 14px;background:rgba(0,0,0,.15);}
+.sys-c.open{display:block;}
+.sys-pre{font-family:var(--mono);font-size:10px;line-height:1.8;color:var(--mt);white-space:pre-wrap;word-break:break-word;}
+
+/* PRODUCTION CHECKS */
+.prod{display:flex;gap:6px;flex-wrap:wrap;padding:0 15px 11px;}
+.pck{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-family:var(--mono);color:var(--mt);cursor:pointer;user-select:none;padding:3px 8px;border-radius:5px;border:1px solid var(--bdr);background:var(--card);transition:all .15s;}
+.pck:hover{border-color:var(--green);}
+.pck.done{color:var(--green);border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.07);}
+.pck .cb{width:10px;height:10px;border:1.5px solid var(--mt);border-radius:2px;flex-shrink:0;font-size:8px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.pck.done .cb{background:var(--green);border-color:var(--green);color:#000;}
+
+/* CLIP GEN ROW */
+.cgr{display:flex;gap:7px;align-items:center;padding:0 15px 12px;}
+.sbtn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--bdr);background:var(--card);color:var(--tx);font-family:var(--sans);transition:all .15s;white-space:nowrap;}
+.sbtn:hover{border-color:var(--purple);color:var(--purple);}
+.sbtn:disabled{opacity:.35;cursor:not-allowed;}
+.cst{font-family:var(--mono);font-size:10px;color:var(--mt);}
+.cst.ok{color:var(--green);}.cst.err{color:var(--red);}
+
+/* COPY ROW */
+.crow{display:flex;gap:5px;flex-wrap:wrap;padding:0 15px 14px;}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-family:var(--mono);padding:3px 9px;border-radius:5px;background:var(--card);border:1px solid var(--bdr);color:var(--mt);cursor:pointer;transition:all .15s;}
+.chip:hover{color:var(--tx);border-color:var(--blue);}
+.chip.pa{color:var(--purple);border-color:rgba(167,139,250,.3);}
+.chip.pb{color:var(--gold);border-color:rgba(245,158,11,.3);}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:56px 24px;color:var(--mt);}
+.empty-icon{font-size:48px;margin-bottom:16px;}
+.empty h2{font-size:20px;font-weight:700;color:var(--tx);margin-bottom:10px;}
+.empty p{font-size:13px;line-height:1.7;}
+
+/* SPINNER / TOAST */
+.spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite;flex-shrink:0;}
+@keyframes sp{to{transform:rotate(360deg);}}
+#toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--blue);color:var(--tx);font-family:var(--mono);font-size:12px;padding:10px 18px;border-radius:10px;display:none;z-index:9999;animation:fu .2s ease;box-shadow:0 4px 24px rgba(0,0,0,.4);}
+@keyframes fu{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+@media(max-width:768px){
+  .clips{grid-template-columns:1fr;}
+  .cc{border-right:none;border-bottom:1px solid var(--bdr);}
+  .cc:last-child{border-bottom:none;}
+  .irow{flex-direction:column;}
+  .hdr{padding:12px 16px;}
+  .body{padding:20px 16px 60px;}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo"><span class="w">W</span><span class="s">S</span></div>
+  <div class="hdr-info">
+    <h1>WordSnap — WTS Factory</h1>
+    <p>What the Similarity · 3-Clip Video Blueprint Generator</p>
+  </div>
+  <div class="badge">● LIVE AI</div>
+</div>
+
+<div class="body">
+  <div class="ilbl">Enter a topic — AI generates word pairs + full 3-clip blueprints</div>
+  <div class="irow">
+    <input class="tinput" id="ti" placeholder="e.g. confusing English word pairs…" onkeydown="if(event.key==='Enter')gen()"/>
+    <select class="csel" id="pc">
+      <option value="3">3 pairs</option>
+      <option value="4" selected>4 pairs</option>
+    </select>
+    <button class="gbtn" id="mb" onclick="gen()">
+      <span id="mbt">✦ Generate</span>
+    </button>
+  </div>
+
+  <div class="hot-lbl">🔥 Top searched word pairs in the USA — Google Data</div>
+  <div class="hot-chips">
+    <div class="hchip top" onclick="lt('Affect vs Effect')"><span class="hw">Affect / Effect</span><span class="hr">#1 · 1,026,100/mo</span></div>
+    <div class="hchip" onclick="lt('Breath vs Breathe')"><span class="hw">Breath / Breathe</span><span class="hr">#2 · 157,000/mo</span></div>
+    <div class="hchip" onclick="lt('Ensure vs Insure')"><span class="hw">Ensure / Insure</span><span class="hr">#3 · 105,200/mo</span></div>
+    <div class="hchip" onclick="lt('Principal vs Principle')"><span class="hw">Principal / Principle</span><span class="hr">#5 · 82,900/mo</span></div>
+    <div class="hchip" onclick="lt('Its vs Its apostrophe s')"><span class="hw">Its / It's</span><span class="hr">#6 · high volume</span></div>
+    <div class="hchip" onclick="lt('Whos vs Whose')"><span class="hw">Who's / Whose</span><span class="hr">#7 · high volume</span></div>
+    <div class="hchip" onclick="lt('Lose vs Loose')"><span class="hw">Lose / Loose</span><span class="hr">#8 · high volume</span></div>
+    <div class="hchip" onclick="lt('Than vs Then')"><span class="hw">Than / Then</span><span class="hr">#9 · high volume</span></div>
+    <div class="hchip" onclick="lt('Accept vs Except')"><span class="hw">Accept / Except</span><span class="hr">Top 20</span></div>
+    <div class="hchip" onclick="lt('Complement vs Compliment')"><span class="hw">Complement / Compliment</span><span class="hr">Top 20</span></div>
+    <div class="hchip" onclick="lt('Lay vs Lie')"><span class="hw">Lay / Lie</span><span class="hr">#13 · high volume</span></div>
+    <div class="hchip" onclick="lt('Your vs Youre')"><span class="hw">Your / You're</span><span class="hr">#16 · high volume</span></div>
+  </div>
+
+  <div id="results">
+    <div class="empty">
+      <div class="empty-icon">🎬</div>
+      <h2>Enter a topic to get started</h2>
+      <p>Each word pair gets a full 3-clip WTS blueprint:<br>
+      Hook · Question · Payoff — with Prompt A (text-to-image),<br>
+      Prompt B (image-to-video), voiceover, and production tracker.</p>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── LOCKED SYSTEM PROMPTS ───────────────────────────────
+const SA = `WORDSNAP CHARACTER (locked — match 100%):
+Male. Tan/beige trench coat. Black shirt. Dark sunglasses.
+Dark curly/wavy hair styled upward. Beard stubble.
+SEATED at dark cinematic tech desk. Eyes always on camera.
+Desk props: laptop with WS logo, microphone stand, black mug, magnifying glass.
+Background: FOCUS PLAN EXECUTE amber neon sign, code bracket blue neon, vertical blue neon strip left side, YouTube silver plaque.
+TWO neon frames on wall: LEFT frame = cyan/blue neon glow, RIGHT frame = amber/gold neon glow.
+STYLE: Pixar/Disney cinematic realism. Ultra-detailed 3D render.
+9:16 vertical composition. No text overlays. No subtitles. No watermarks.
+Cinematic lighting. Shallow depth of field. Volumetric light. Realistic shadows and reflections.`;
+
+const SB = `WORDSNAP CHARACTER ANIMATION (locked — same character from Prompt A):
+Maintain 100%: face, hairstyle, trench coat, sunglasses, skin tone, body proportions.
+Character SEATED at desk, eyes on camera at all times.
+Smooth cinematic motion. Natural hand gestures. Realistic blinking. Natural breathing.
+Realistic cloth physics on trench coat. Subtle hair movement.
+9:16 vertical. Pixar/Disney animated movie quality.
+AUDIO: No background music unless specified. No voice acting.
+Natural ambient only unless sound cues are specified in the brief.`;
+
+// ── VOICE SETUP ─────────────────────────────────────────
+window._av = [];
+function lv() {
+  const v = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+  window._av = v.filter(x => x.lang.startsWith('en'));
+  if (!window._av.length) window._av = v;
+  document.querySelectorAll('.vsel').forEach(fv);
+}
+if (window.speechSynthesis) { lv(); window.speechSynthesis.onvoiceschanged = lv; }
+function fv(s) {
+  if (!s) return;
+  const cur = s.value;
+  s.innerHTML = window._av.map(v => `<option value="${v.name}">${v.name.replace(/Microsoft |Google /, '')}</option>`).join('');
+  if (cur) s.value = cur;
+}
+
+// ── TOAST ───────────────────────────────────────────────
+function toast(m) {
+  const e = document.getElementById('toast');
+  e.textContent = m; e.style.display = 'block';
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => e.style.display = 'none', 2400);
+}
+
+// ── API CALL — goes to /api/generate (Vercel function) ──
+async function callAI(prompt, max_tokens = 1000) {
+  const res = await fetch('/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt, max_tokens })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  if (!data.text) throw new Error('Empty response from server');
+  return data.text.replace(/```json\s*/g, '').replace(/```/g, '').trim();
+}
+
+// ── HOT TOPIC LOAD ───────────────────────────────────────
+function lt(t) { document.getElementById('ti').value = t; gen(); }
+
+// ── MAIN GENERATE ────────────────────────────────────────
+async function gen() {
+  const topic = document.getElementById('ti').value.trim();
+  if (!topic) { toast('Enter a topic first'); return; }
+  const count = parseInt(document.getElementById('pc').value);
+  const btn = document.getElementById('mb');
+  btn.disabled = true;
+  document.getElementById('mbt').innerHTML = '<span class="spin"></span> Generating…';
+  document.getElementById('results').innerHTML = `<div class="empty"><div style="font-size:40px;animation:sp 1s linear infinite;display:inline-block">⚙</div><h2 style="margin-top:14px">Building ${count} WTS blueprints…</h2><p>This takes about 15–20 seconds</p></div>`;
+
+  const prompt = `You are the head writer for WordSnap vocabulary channel. Format: What the Similarity (WTS) — two words that feel different but share a surprising hidden connection.
+Topic: "${topic}"
+Generate exactly ${count} word pairs.
+For each write voiceover for 3 clips:
+CLIP1 HOOK 6s: One sentence introducing both words. Example: This is Use and this is Utilize.
+CLIP2 QUESTION 6s: One punchy question. Example: Whats the similarity?
+CLIP3 PAYOFF 6s: One or two sentences revealing the shared connection.
+Return ONLY a valid JSON array. No explanation. No markdown. No backticks. Just the raw JSON array:
+[{"wordA":"WORD1","wordB":"WORD2","similarity":"one-line similarity","vo1":"clip1 vo","vo2":"clip2 vo","vo3":"clip3 vo"}]`;
+
+  try {
+    const raw = await callAI(prompt, 1200);
+    let pairs;
+    try { pairs = JSON.parse(raw); }
+    catch (pe) {
+      const m = raw.match(/\[[\s\S]*\]/);
+      if (!m) throw new Error('Could not parse response as JSON');
+      pairs = JSON.parse(m[0]);
+    }
+    document.getElementById('results').innerHTML = '';
+    pairs.forEach((p, i) => document.getElementById('results').appendChild(mkPair(p, i)));
+    setTimeout(() => document.querySelectorAll('.vsel').forEach(fv), 300);
+  } catch (e) {
+    document.getElementById('results').innerHTML = `<div class="empty"><h2>⚠ Error</h2><p style="color:var(--red);font-family:var(--mono);font-size:12px;margin-top:8px">${e.message}</p></div>`;
+  }
+  btn.disabled = false;
+  document.getElementById('mbt').textContent = '✦ Generate';
+}
+
+// ── BUILD PAIR CARD ──────────────────────────────────────
+function mkPair(pair, idx) {
+  const id = 'p' + idx;
+  const div = document.createElement('div');
+  div.className = 'pair-block'; div.id = id;
+  const clips = [
+    { n: 1, cls: 'c1', lbl: 'CLIP 1 — HOOK', title: (pair.wordA || '') + ' vs ' + (pair.wordB || ''), dur: '0:00–0:06', vo: pair.vo1 || '' },
+    { n: 2, cls: 'c2', lbl: 'CLIP 2 — QUESTION', title: "What's the Similarity?", dur: '0:06–0:12', vo: pair.vo2 || '' },
+    { n: 3, cls: 'c3', lbl: 'CLIP 3 — PAYOFF', title: 'The Reveal', dur: '0:12–0:18', vo: pair.vo3 || '' },
+  ];
+  const sim = (pair.similarity || '').replace(/"/g, '&quot;');
+  div.innerHTML = `
+  <div class="pair-hdr">
+    <div class="pnum">0${idx + 1}</div>
+    <span class="wchip a" contenteditable="true" id="${id}-wA" spellcheck="false">${pair.wordA || ''}</span>
+    <span class="wsep">WTS</span>
+    <span class="wchip b" contenteditable="true" id="${id}-wB" spellcheck="false">${pair.wordB || ''}</span>
+    <div class="simtag" title="${sim}">⚡ ${pair.similarity || ''}</div>
+    <div class="pacts">
+      <button class="abtn ga" id="${id}-gaBtn" onclick="genAll('${id}')"><span id="${id}-gaTxt">⚡ Generate All</span></button>
+      <button class="abtn ex" onclick="exportPair('${id}')">📋 Export</button>
+    </div>
+  </div>
+  <div class="vo-strip">
+    <span class="vo-lbl">🎙 VOICEOVER PREVIEW</span>
+    <button class="vbtn" onclick="playVO('${id}')">▶ Play All</button>
+    <button class="vbtn" onclick="stopVO()">■ Stop</button>
+    <select class="vsel" id="${id}-vsel"></select>
+    <span class="vst" id="${id}-vst">Ready</span>
+  </div>
+  <div class="clips">${clips.map(c => mkClip(id, pair, c)).join('')}</div>`;
+  return div;
+}
+
+function mkClip(pid, pair, clip) {
+  const cid = `${pid}-c${clip.n}`;
+  const checks = ['Image generated', 'Video generated', 'VO recorded', 'Clip done'];
+  return `<div class="cc" id="${cid}">
+  <div class="ch">
+    <span class="cbadge ${clip.cls}">${clip.lbl}</span>
+    <span class="ctitle">${clip.title}</span>
+    <span class="cdur">${clip.dur} · 6 sec</span>
+  </div>
+  <div class="cbody">
+    <div>
+      <div class="slbl vo">🎙 VOICEOVER</div>
+      <div class="tbox vo" id="${cid}-vo" contenteditable="true">${clip.vo}</div>
+    </div>
+    <div>
+      <div class="slbl img">▣ PROMPT A — TEXT TO IMAGE</div>
+      <div class="sys-r" onclick="tgSys('${cid}-sA')">
+        <span class="sys-lk">🔒 Locked Character System</span>
+        <span class="sys-ar" id="${cid}-sA-ar">▼ show</span>
+      </div>
+      <div class="sys-c" id="${cid}-sA">
+        <pre class="sys-pre">${SA}</pre>
+        <button class="chip" style="margin-top:8px" onclick="cp(SA)">copy system prompt</button>
+      </div>
+      <div class="tbox ld" id="${cid}-pA" contenteditable="false" style="margin-top:7px">Click ⚡ Generate All above…</div>
+    </div>
+    <div>
+      <div class="slbl vid">▶ PROMPT B — IMAGE TO VIDEO</div>
+      <div class="sys-r" onclick="tgSys('${cid}-sB')">
+        <span class="sys-lk">🔒 Locked Animation System</span>
+        <span class="sys-ar" id="${cid}-sB-ar">▼ show</span>
+      </div>
+      <div class="sys-c" id="${cid}-sB">
+        <pre class="sys-pre">${SB}</pre>
+        <button class="chip" style="margin-top:8px" onclick="cp(SB)">copy system prompt</button>
+      </div>
+      <div class="tbox ld" id="${cid}-pB" contenteditable="false" style="margin-top:7px">Generate Prompt A first…</div>
+    </div>
+  </div>
+  <div class="prod">
+    ${checks.map((c, i) => `<div class="pck" id="${cid}-ck${i}" onclick="tgCk('${cid}-ck${i}')"><span class="cb" id="${cid}-cb${i}"></span>${c}</div>`).join('')}
+  </div>
+  <div class="cgr">
+    <button class="sbtn" id="${cid}-gb" onclick="genClip('${cid}','${pid}')">✦ Generate</button>
+    <span class="cst" id="${cid}-st"></span>
+  </div>
+  <div class="crow">
+    <button class="chip pa" onclick="cpFull('${cid}-pA','A')">copy full Prompt A</button>
+    <button class="chip pb" onclick="cpFull('${cid}-pB','B')">copy full Prompt B</button>
+    <button class="chip" onclick="cp(document.getElementById('${cid}-vo').textContent)">copy VO</button>
+  </div>
+</div>`;
+}
+
+// ── TOGGLE SYS / CHECKS ──────────────────────────────────
+function tgSys(id) {
+  const b = document.getElementById(id), a = document.getElementById(id + '-ar');
+  const o = !b.classList.contains('open');
+  b.classList.toggle('open', o);
+  if (a) a.textContent = o ? '▲ hide' : '▼ show';
+}
+function tgCk(id) {
+  const e = document.getElementById(id), b = document.getElementById(id.replace('-ck', '-cb'));
+  const d = !e.classList.contains('done');
+  e.classList.toggle('done', d);
+  if (b) b.textContent = d ? '✓' : '';
+}
+
+// ── VOICEOVER ────────────────────────────────────────────
+function playVO(pid) {
+  stopVO();
+  const lines = ['c1', 'c2', 'c3'].map(c => {
+    const e = document.getElementById(pid + '-' + c + '-vo');
+    return e ? e.textContent.trim() : '';
+  }).filter(Boolean);
+  if (!lines.length) { toast('No voiceover text'); return; }
+  const utt = new SpeechSynthesisUtterance(lines.join('. '));
+  const sel = document.getElementById(pid + '-vsel');
+  if (sel) { const v = window.speechSynthesis.getVoices().find(x => x.name === sel.value); if (v) utt.voice = v; }
+  utt.rate = 0.95;
+  const st = document.getElementById(pid + '-vst');
+  utt.onstart = () => { if (st) { st.textContent = '▶ Playing…'; st.className = 'vst on'; } };
+  utt.onend = () => { if (st) { st.textContent = '✓ Done'; st.className = 'vst'; } };
+  window.speechSynthesis.speak(utt);
+}
+function stopVO() {
+  window.speechSynthesis.cancel();
+  document.querySelectorAll('.vst').forEach(e => { e.textContent = 'Stopped'; e.className = 'vst'; });
+}
+
+// ── GENERATE ALL 3 CLIPS ─────────────────────────────────
+async function genAll(pid) {
+  const btn = document.getElementById(pid + '-gaBtn'), txt = document.getElementById(pid + '-gaTxt');
+  btn.disabled = true; txt.innerHTML = '<span class="spin"></span> Generating all…';
+  const wA = document.getElementById(pid + '-wA')?.textContent?.trim() || '';
+  const wB = document.getElementById(pid + '-wB')?.textContent?.trim() || '';
+  const sim = document.querySelector('#' + pid + ' .simtag')?.textContent?.replace('⚡ ', '').trim() || '';
+  for (let n = 1; n <= 3; n++) await genClip(`${pid}-c${n}`, pid, wA, wB, n, sim);
+  btn.disabled = false; txt.textContent = '↺ Regen All';
+  toast('✓ All 3 clips generated');
+}
+
+// ── GENERATE SINGLE CLIP ─────────────────────────────────
+async function genClip(cid, pid, wAin, wBin, nIn, simIn) {
+  if (!pid) pid = cid.substring(0, cid.lastIndexOf('-c'));
+  const wA = wAin || document.getElementById(pid + '-wA')?.textContent?.trim() || '';
+  const wB = wBin || document.getElementById(pid + '-wB')?.textContent?.trim() || '';
+  const n = parseInt(nIn || cid.charAt(cid.length - 1));
+  const sim = simIn || document.querySelector('#' + pid + ' .simtag')?.textContent?.replace('⚡ ', '').trim() || '';
+  const btn = document.getElementById(cid + '-gb'), st = document.getElementById(cid + '-st');
+  const pA = document.getElementById(cid + '-pA'), pB = document.getElementById(cid + '-pB');
+  const vo = document.getElementById(cid + '-vo')?.textContent?.trim() || '';
+
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin"></span>'; }
+  if (st) { st.textContent = ''; st.className = 'cst'; }
+  if (pA) { pA.textContent = 'Generating…'; pA.className = 'tbox ld'; pA.contentEditable = 'false'; }
+  if (pB) { pB.textContent = 'Generating…'; pB.className = 'tbox ld'; pB.contentEditable = 'false'; }
+
+  const instr = {
+    1: `CLIP 1 HOOK 0:00-0:06 6 seconds. VO: "${vo}"
+PROMPT A: Still frame. Character seated at dark studio desk. LEFT blue neon frame contains a vivid Pixar-style illustration representing "${wA}". RIGHT gold neon frame contains a vivid Pixar-style illustration representing "${wB}". Describe both illustrations in detail, character pose, and full cinematic scene.
+PROMPT B: Animate 6 seconds with exact timestamps:
+0:00-0:02 character raises LEFT hand pointing at LEFT frame, LEFT frame lights up with image of "${wA}" appearing. Play WHOOSH plus electric glow hum plus DIGITAL POP CLICK at the exact moment.
+0:02-0:04 character swings RIGHT hand pointing at RIGHT frame, RIGHT frame lights up with image of "${wB}" appearing. Play WHOOSH plus glow hum plus DIGITAL POP CLICK.
+0:04-0:06 hands come together knowing smile. Play soft settle sound. Faint lo-fi background track throughout. Eyes on camera. No voiceover.`,
+    2: `CLIP 2 QUESTION 0:06-0:12 6 seconds. Both frames visible showing Clip 1 images. VO: "${vo}"
+PROMPT A: Still frame. Character at desk. Both neon frames showing their images from Clip 1. Large glowing question mark graphic appears between the frames. Character has playful curious expression.
+PROMPT B: Animate 6 seconds:
+0:00-0:01 hands to resting position. Play soft cloth movement sound.
+0:01-0:03 character tilts head with playful smirk. Play subtle thinking sound.
+0:03-0:05 glowing question mark appears between frames. Play MAGICAL POP SPARKLE at the exact moment.
+0:05-0:06 eyes lock on camera confident. Play dramatic silence drop. Faint background track throughout. No voiceover.`,
+    3: `CLIP 3 PAYOFF 0:12-0:18 6 seconds. Reveals similarity: "${sim}". VO: "${vo}"
+PROMPT A: Still frame. Both frames visible. LEFT frame pulses warm amber gold glow. RIGHT frame pulses sharp teal cyan glow. Frames visually connect. Character confident hands open toward camera.
+PROMPT B: Animate 6 seconds:
+0:00-0:02 LEFT hand points at LEFT frame, LEFT frame pulses warm golden glow. Play WHOOSH plus warm pulse plus DIGITAL POP CLICK.
+0:02-0:04 RIGHT hand points at RIGHT frame, RIGHT frame pulses sharp teal glow. Play WHOOSH plus contrasting chime plus DIGITAL POP CLICK.
+0:04-0:05 hands open toward camera. Play soft whoosh.
+0:05-0:06 confident nod at camera. Play single warm ding. Cinematic slow push-in throughout. No voiceover.`
+  };
+
+  const prompt = `You are the creative director for WordSnap vocabulary channel. Generate Prompt A text-to-image and Prompt B image-to-video for this clip.
+Word pair: "${wA}" vs "${wB}". Similarity: "${sim}".
+${instr[n]}
+Both prompts must reference the locked WordSnap character: tan trench coat, dark sunglasses, dark studio desk, WS laptop, two neon frames on wall.
+Return ONLY raw JSON. No explanation. No markdown. No backticks. Just this exact format:
+{"promptA":"full text-to-image prompt here","promptB":"full image-to-video prompt with timestamps and sounds here"}`;
+
+  try {
+    const raw = await callAI(prompt, 1200);
+    let d;
+    try { d = JSON.parse(raw); }
+    catch (pe) { const m = raw.match(/\{[\s\S]*\}/); if (!m) throw new Error('No JSON found'); d = JSON.parse(m[0]); }
+    if (pA) { pA.textContent = d.promptA || 'Error'; pA.className = 'tbox'; pA.contentEditable = 'true'; }
+    if (pB) { pB.textContent = d.promptB || 'Error'; pB.className = 'tbox'; pB.contentEditable = 'true'; }
+    if (st) { st.textContent = '✓'; st.className = 'cst ok'; }
+  } catch (e) {
+    if (pA) { pA.textContent = 'Error: ' + e.message; pA.className = 'tbox'; }
+    if (pB) { pB.textContent = 'Error: ' + e.message; pB.className = 'tbox'; }
+    if (st) { st.textContent = '✗ ' + e.message.slice(0, 40); st.className = 'cst err'; }
+  }
+  if (btn) { btn.disabled = false; btn.textContent = '↺ Regen'; }
+}
+
+// ── EXPORT ALL ───────────────────────────────────────────
+function exportPair(pid) {
+  const wA = document.getElementById(pid + '-wA')?.textContent?.trim() || '';
+  const wB = document.getElementById(pid + '-wB')?.textContent?.trim() || '';
+  const sim = document.querySelector('#' + pid + ' .simtag')?.textContent?.replace('⚡ ', '').trim() || '';
+  let out = `WORDSNAP WTS BLUEPRINT\n${wA} vs ${wB}\nSimilarity: ${sim}\n${'='.repeat(50)}\n\n`;
+  [1, 2, 3].forEach(n => {
+    const cid = `${pid}-c${n}`;
+    const lbls = ['HOOK', 'QUESTION', 'PAYOFF'], durs = ['0:00-0:06', '0:06-0:12', '0:12-0:18'];
+    out += `CLIP ${n} — ${lbls[n - 1]} (${durs[n - 1]})\n${'-'.repeat(40)}\n`;
+    out += `VO: ${document.getElementById(cid + '-vo')?.textContent?.trim() || ''}\n\n`;
+    out += `PROMPT A (Text-to-Image):\n${SA}\n---\n${document.getElementById(cid + '-pA')?.textContent?.trim() || '(not generated)'}\n\n`;
+    out += `PROMPT B (Image-to-Video):\n${SB}\n---\n${document.getElementById(cid + '-pB')?.textContent?.trim() || '(not generated)'}\n\n`;
+  });
+  navigator.clipboard.writeText(out).then(() => toast('✓ Full blueprint copied to clipboard'));
+}
+
+// ── COPY HELPERS ─────────────────────────────────────────
+function cp(t) { navigator.clipboard.writeText(typeof t === 'string' ? t : (t?.textContent?.trim() || '')).then(() => toast('✓ Copied')); }
+function cpFull(id, w) {
+  const brief = document.getElementById(id)?.textContent?.trim() || '';
+  navigator.clipboard.writeText((w === 'A' ? SA : SB) + '\n\n---\n\n' + brief).then(() => toast('✓ Full prompt copied'));
+}
+</script>
+</body>
+</html>
